@@ -1,0 +1,36 @@
+{% extends 'app/base.html' %}
+{% block content %}
+    <h3>List of Devices</h3>
+
+    <table class="striped responsive-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Serial</th>
+                <th>Tag</th>
+                <th>History Items</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for device in devices %}
+                <tr>
+                    <td>{{device.name}}</td>
+                    <td>{{device.type.name}}</td>
+                    <td>{{device.serial_number}}</td>
+                    <td>{{device.tag}}</td>
+                    <td>{{device.history_itens.count}}</td>
+                    <td>
+                        <a href="#"><i class="tiny material-icons">edit</i></a>
+                        <a href="#"><i class="tiny material-icons">pageview</i></a>
+                        <a href="#"><i class="tiny material-icons">delete</i></a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+
+
+
+    </table>
+{% endblock %}

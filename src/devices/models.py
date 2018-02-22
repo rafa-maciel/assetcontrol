@@ -18,7 +18,7 @@ class Device(models.Model):
     brand = models.CharField(max_length=30, null=False, blank=False)
     name = models.CharField(max_length=40, null=False, blank=False)
     type = models.ForeignKey(Type, related_name='devices', null=False)
-    created = models.DateField(auto_created=True)
+    created = models.DateField(auto_created=True, auto_now_add=True)
 
     def __str__(self):
         return '{} [model:{}]'.format(self.name, self.model)
