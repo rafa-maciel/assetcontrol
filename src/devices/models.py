@@ -25,8 +25,8 @@ class Device(models.Model):
 
 
 class HistoryItem(models.Model):
-    device = models.ForeignKey(Device, on_delete=models.CASCADE, related_name='history_itens')
-    date = models.DateField(auto_created=True)
+    device = models.ForeignKey(Device, on_delete=models.CASCADE, related_name='history_items')
+    date = models.DateField(auto_created=True, auto_now_add=True)
     title = models.CharField(max_length=140, null=False)
     description = models.TextField(blank=False)
     keywords = models.CharField(max_length=150, null=False, blank=True)

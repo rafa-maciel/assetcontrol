@@ -7,6 +7,8 @@
             <tr>
                 <th>Name</th>
                 <th>Type</th>
+                <th>Model</th>
+                <th>Brand</th>
                 <th>Serial</th>
                 <th>Tag</th>
                 <th>History Items</th>
@@ -17,13 +19,15 @@
             {% for device in devices %}
                 <tr>
                     <td>{{device.name}}</td>
+                    <td>{{device.model}}</td>
+                    <td>{{device.brand}}</td>
                     <td>{{device.type.name}}</td>
                     <td>{{device.serial_number}}</td>
                     <td>{{device.tag}}</td>
                     <td>{{device.history_itens.count}}</td>
                     <td>
-                        <a href="#"><i class="tiny material-icons">edit</i></a>
-                        <a href="#"><i class="tiny material-icons">pageview</i></a>
+                        <a href="{% url 'devices:update' device.pk %}"><i class="tiny material-icons">edit</i></a>
+                        <a href="{% url 'devices:details' device.pk %}"><i class="tiny material-icons">pageview</i></a>
                         <a href="#"><i class="tiny material-icons">delete</i></a>
                     </td>
                 </tr>
