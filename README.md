@@ -4,12 +4,12 @@ Asset Control is a basic web app to manage assets.
 # Functions
   - CRUD for Devices
   - CRUD for Devices Types
-  - Create a history of change for each item's change
+  - History of change for each item's change
  
 # What I Learned
   - Created a django web application with settings, urls, views, models, etc.
-  - Created an enveriorment with virtualenv
-  - Managed static files from django tags and enverioment
+  - Created an environmentwith virtualenv
+  - To Manage static files from django environment
   - Developed a CRUD to a model object using Django GenericViews (CreateView, UpdateView, DeleteView, ListView)
   - Implemented ajax functions with JQuery and Django JsonResponse.
   
