@@ -1,5 +1,6 @@
 {% extends 'app/base.html' %}
-{% block content %}
+{% block content  %}
+
     {{ form. }}
     {% if form.instance.pk %}
         <h3>Edit Device</h3>
@@ -32,7 +33,7 @@
             <div class="input-field col s6">
                 <input id="brand" type="text" class="validade" name="brand"
                     value="{{ form.brand.value|default:''}}">
-                <label for="brand">Tag</label>
+                <label for="brand">Brand</label>
             </div>
         </div>
 
@@ -45,7 +46,7 @@
             <div class="col s6">
                 <div class="row">
                     <div class="col s8 input-field">
-                        <select name="type">
+                        <select name="type" id="type">
                             {% for id, name in form.type.field.choices %}
                                 {% if id != '' %}
                                 <option value="{{ id }}" {% if form.type.value == id %} selected {% endif %}>{{ name }}</option>
@@ -55,7 +56,7 @@
                         <label>Device Type</label>
                     </div>
                     <div class="col s4">
-                        <a href="#" class="waves-effect waves-light btn">New Type<i class="tiny material-icons">add</i></a>
+                        <a class="btn-floating btn-small waves-effect waves-light modal-trigger" href="#modal1"><i class="material-icons">add</i></a>
                     </div>
                 </div>
 
@@ -69,4 +70,31 @@
             <i class="material-icons right">send</i>
         </button>
     </form>
+
+
+    <!-- Modal Structure -->
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <h4>Create a new Device Type</h4>
+            <form id="form-new-item">
+                <div class="row">
+                        <div class="col s12 input-field">
+                            <input id="type_name" type="text" class="validade" name="type_name">
+                            <label for="type_name">Device Type Name</label>
+                        </div>
+                </div
+            </form>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>
+            <a href="#!" class="btn-create-new-item modal-action modal-close waves-effect waves-green btn-flat">Create</a>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block extras %}
+    {% load staticfiles %}
+    <script type="text/javascript" src="{% static 'js/create-asset-form.js'%}"></script>
+    <script type="text/javascript" src="{% static 'js/csrftoken.js'%}"></script>
 {% endblock %}

@@ -9,4 +9,5 @@ urlpatterns = [
     url(r'^devices/details/(?P<pk>[0-9]+)/$', views.DeviceDetailView.as_view(), name='details'),
     url(r'^devices/$', views.DeviceListView.as_view(), name='list'),
     url(r'^devices/item/create/$', views.HistoryItemCreateView.as_view(), name='item-create'),
+    url(r'^devices/type/create', views.TypeAjaxCrateView.as_view(), name='type-create'),
 ]
