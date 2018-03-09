@@ -42,6 +42,17 @@ class DeviceDetailView(DetailView):
     template_name = 'devices/detail.html'
     context_object_name = 'device'
 
+    def get_context_data(self, **kwargs):
+        context = super(DeviceDetailView, self).get_context_data(**kwargs)
+        max_items = self.request.GET.get("maxitems", None)
+        if max_items is None:
+            max_items = 3
+
+        context['items_filtered'] = HistoryItem.objects.filter(device=self.object).order_by('-date')[:max_items]
+
+        return context
+
+
 
 class HistoryItemAjaxCreateView(View):
     def post(self, request):

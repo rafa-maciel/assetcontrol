@@ -58,7 +58,7 @@
             <h4>History Items</h4>
             <a class="waves-effect waves-light btn modal-trigger" href="#modalNewItem">New Item</a>
             <ul class="collection" id="history-items">
-                {% for item in device.history_items.all %}
+                {% for item in items_filtered|dictsortreversed:"date" %}
                     <li class="collection-item">
                         <div class="row">
                                 <div class="col s10">
@@ -85,6 +85,11 @@
                     </li>
                 {% endfor %}
             </ul>
+
+            <p class="right-align">
+                Estamos listando {{request.GET.maxitems}} de {{ device.history_items.count }} -
+                <a href="{% url 'devices:details' device.pk %}?maxitems={{request.GET.maxitems|add:5}}">ver mais</a>
+            </p>
         </div>
     </div>
 

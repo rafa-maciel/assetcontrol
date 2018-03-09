@@ -1,0 +1,4 @@
+* Device-details page
+    - change link "see more" to be released by ajax
+    - change de js function to add new history items on list's top
+    - implement functions update and remove
