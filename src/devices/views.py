@@ -8,9 +8,10 @@ from django.views.generic.list import ListView
 from django.views import View
 from django.views.generic.detail import DetailView
 from django.http import JsonResponse
+from django.core import serializers
 
 from .models import Device, HistoryItem, Type
-from .forms import DeviceForm
+from .forms import DeviceForm, HistoryItemForm
 
 
 class DeviceCreateView(CreateView):
@@ -42,15 +43,19 @@ class DeviceDetailView(DetailView):
     context_object_name = 'device'
 
 
-class HistoryItemCreateView(CreateView):
-    model = HistoryItem
-    fields = ['device', 'title', 'description', 'keywords']
+class HistoryItemAjaxCreateView(View):
+    def post(self, request):
+        if request.POST and request.is_ajax():
+            form = HistoryItemForm(request.POST)
+            item = form.save()
+            json_data_response = {
+                'title': item.title,
+                'date': item.date.strftime("%d/%m/%Y"),
+                'description': item.description,
+                'keywords': item.keywords
+            }
 
-    def get_success_url(self):
-        data = {
-            'pk': self.object.device.pk
-        }
-        return reverse_lazy('devices:details', kwargs={'pk': self.object.device.pk})
+            return JsonResponse(json_data_response)
 
 
 class TypeAjaxCrateView(View):

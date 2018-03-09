@@ -57,7 +57,7 @@
         <div class="col s12">
             <h4>History Items</h4>
             <a class="waves-effect waves-light btn modal-trigger" href="#modalNewItem">New Item</a>
-            <ul class="collection">
+            <ul class="collection" id="history-items">
                 {% for item in device.history_items.all %}
                     <li class="collection-item">
                         <div class="row">
@@ -93,7 +93,6 @@
 <!-- Modal New History Item -->
 <div id="modalNewItem" class="modal"item-create>
     <form id="newItem" action="{% url 'devices:item-create' %}" method="POST">
-        {% csrf_token %}
         <input type="hidden" name="device" value="{{device.pk}}">
         <div class="modal-content">
             <h4>Create New History Item</h4>
@@ -119,10 +118,16 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button class="btn waves-effect waves-light" type="submit" id="createNewItem">Create new Item
+            <button class="btn waves-effect waves-light" type="button" id="btn-create-new-item">Create new Item
                 <i class="material-icons right">send</i>
             </button
         </div>
     </form>
 </div>
+{% endblock %}
+
+{% block extras %}
+    {% load staticfiles %}
+    <script type="text/javascript" src="{% static 'js/create-history-item.js'%}"></script>
+    <script type="text/javascript" src="{% static 'js/csrftoken.js'%}"></script>
 {% endblock %}
