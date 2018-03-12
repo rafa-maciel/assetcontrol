@@ -15,6 +15,7 @@ function createNewHistoryItem() {
             cleanFormItem();
             updateItemsTotalLabel();
             updateItemsMaxLabel();
+            $("#modalNewItem").modal("close");
         }
     });
 
