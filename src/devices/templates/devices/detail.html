@@ -86,10 +86,19 @@
                 {% endfor %}
             </ul>
 
-            <p class="right-align">
-                Estamos listando {{request.GET.maxitems}} de {{ device.history_items.count }} -
-                <a href="{% url 'devices:details' device.pk %}?maxitems={{request.GET.maxitems|add:5}}">ver mais</a>
-            </p>
+            <div class="row">
+                <div class="col s6">
+                    <a id="see-more" class="btn">see more</a>
+                </div>
+                <div class="col s6">
+                    <p class="right-align">
+                        You're seeing <span id="max-items">3</span> at <span id="items-size">{{ device.history_items.count }}</span>
+                    </p>
+                </div>
+
+            </div>
+
+
         </div>
     </div>
 

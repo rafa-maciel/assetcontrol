@@ -12,6 +12,7 @@ from django.core import serializers
 
 from .models import Device, HistoryItem, Type
 from .forms import DeviceForm, HistoryItemForm
+from .utils import serialize_history_item
 
 
 class DeviceCreateView(CreateView):
@@ -53,18 +54,18 @@ class DeviceDetailView(DetailView):
         return context
 
 
-
 class HistoryItemAjaxCreateView(View):
     def post(self, request):
         if request.POST and request.is_ajax():
             form = HistoryItemForm(request.POST)
             item = form.save()
-            json_data_response = {
-                'title': item.title,
-                'date': item.date.strftime("%d/%m/%Y"),
-                'description': item.description,
-                'keywords': item.keywords
-            }
+            json_data_response = serialize_history_item(item)
+            # {
+            #     'title': item.title,
+            #     'date': item.date.strftime("%d/%m/%Y"),
+            #     'description': item.description,
+            #     'keywords': item.keywords
+            # }
 
             return JsonResponse(json_data_response)
 
@@ -73,7 +74,7 @@ class TypeAjaxCrateView(View):
 
     def post(self, request):
         if request.POST and request.is_ajax():
-            name = request.POST.get('name', None);
+            name = request.POST.get('name', None)
             if name:
                 type = Type.objects.create(name=name)
                 json_data_response = {
@@ -82,3 +83,19 @@ class TypeAjaxCrateView(View):
                 }
 
                 return JsonResponse(json_data_response)
+
+
+class SeeMoreItemsAjaxView(View):
+    def post(self, request, **kwargs):
+        if request.is_ajax() and request.POST:
+            min = request.POST.get('min', None)
+            max = request.POST.get('max', None)
+            device_pk = kwargs.get('pk')
+
+            if min and max and device_pk:
+                items = HistoryItem.objects.filter(device=device_pk).order_by("-date")[min:max]
+                json_data_response = []
+                for item in items:
+                    json_data_response.append(serialize_history_item(item))
+
+                return JsonResponse(json_data_response, safe=False)
