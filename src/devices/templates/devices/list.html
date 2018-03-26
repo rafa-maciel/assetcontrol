@@ -15,10 +15,11 @@
                 <th>Actions</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="device-items">
             {% for device in devices %}
-                <tr>
-                    <td>{{device.name}}</td>
+                <tr id="{{device.pk}}">
+                    <td class="device-pk">{{device.pk}}</td>
+                    <td class="device-name">{{device.name}}</td>
                     <td>{{device.model}}</td>
                     <td>{{device.brand}}</td>
                     <td>{{device.type.name}}</td>
@@ -28,13 +29,34 @@
                     <td>
                         <a href="{% url 'devices:update' device.pk %}"><i class="tiny material-icons">edit</i></a>
                         <a href="{% url 'devices:details' device.pk %}"><i class="tiny material-icons">pageview</i></a>
-                        <a href="#"><i class="tiny material-icons">delete</i></a>
+                        <a href="" class="device-remove"><i class="tiny material-icons">delete</i></a>
                     </td>
                 </tr>
             {% endfor %}
         </tbody>
-
-
-
     </table>
+
+    <!-- Modal device remove confirmation-->
+    <div id="modal-device-remove" class="modal">
+        <div class="modal-content">
+            <p>
+                You're trying to remove a device and this action couldn't be returned.
+                Are you sure?
+            </p>
+            <p>Device: <span class="device-name"></span></p>
+            <form>
+                <input type="hidden" name="device-pk" />
+            </form>
+            <div class="row right-align">
+                <a class="btn-small btn btn-remove">Delete</a>
+                <a class="btn-small btn btn-cancel">Cancel</a>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block extras %}
+    {% load staticfiles %}
+    <script type="text/javascript" src="{% static 'js/device-list.js'%}"></script>
+    <script type="text/javascript" src="{% static 'js/csrftoken.js'%}"></script>
 {% endblock %}

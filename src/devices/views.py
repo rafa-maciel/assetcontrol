@@ -23,6 +23,20 @@ class DeviceCreateView(CreateView):
         return reverse('devices:list')
 
 
+class DeviceDeleteAjaxView(View):
+    def post(self, request):
+        if request.POST and request.is_ajax():
+            pk = request.POST.get('pk', None)
+            json_data_response = {'pk': pk}
+            if pk:
+                Device.objects.get(pk=pk).delete()
+                json_data_response['success'] = 'Device has been removed'
+            else:
+                json_data_response['failure'] = 'Device not found'
+
+            return JsonResponse(json_data_response)
+
+
 class DeviceUpdateView(UpdateView):
     model = Device
     form_class = DeviceForm

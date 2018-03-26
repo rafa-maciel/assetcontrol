@@ -3,7 +3,10 @@ $(function() {
     updateButtonsItemActions(); // its needed to remove edit button default action and set a new for
     activeButtonSeeMoreItems();
 
-    $("#modal-item-remove .btn-small").click(deleteHistoryItem);
+    $("#modal-item-remove .btn-remove-item").click(deleteHistoryItem);
+    $("#modal-item-remove .btn-modal-remove-cancel").click(function() {
+        $("#modal-item-remove").modal("close");
+    });
     $("#modal-item-remove").modal();
 });
 
