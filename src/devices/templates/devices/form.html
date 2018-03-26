@@ -56,7 +56,7 @@
                         <label>Device Type</label>
                     </div>
                     <div class="col s4">
-                        <a class="btn-floating btn-small waves-effect waves-light modal-trigger" href="#modal1"><i class="material-icons">add</i></a>
+                        <a class="btn-floating btn-small waves-effect waves-light modal-trigger" href="#modal-form-type"><i class="material-icons">add</i></a>
                     </div>
                 </div>
 
@@ -73,7 +73,7 @@
 
 
     <!-- Modal Structure -->
-    <div id="modal1" class="modal">
+    <div id="modal-form-type" class="modal">
         <div class="modal-content">
             <h4>Create a new Device Type</h4>
             <form id="form-new-item">
@@ -95,6 +95,6 @@
 
 {% block extras %}
     {% load staticfiles %}
-    <script type="text/javascript" src="{% static 'js/create-asset-form.js'%}"></script>
+    <script type="text/javascript" src="{% static 'js/device-form.js'%}"></script>
     <script type="text/javascript" src="{% static 'js/csrftoken.js'%}"></script>
 {% endblock %}
