@@ -1,4 +1,4 @@
-{% extends 'app/base.html' %}
+D{% extends 'app/base.html' %}
 {% load staticfiles %}
 {% block content %}
 <section class="section">
@@ -46,23 +46,17 @@
     </div>
 </section>
 <section class="section">
-    <div class="row">
-        <div class="col s12">
-            <div class="row">
-
-            </div>
-        </div>
-    </div>
-    <div class="row">
+        <div class="row">
         <div class="col s12">
             <h4>History Items</h4>
-            <a class="waves-effect waves-light btn modal-trigger" href="#modalNewItem">New Item</a>
+            <a class="waves-effect waves-light btn modal-trigger" href="#modal-item">New Item</a>
             <ul class="collection" id="history-items">
                 {% for item in items_filtered|dictsortreversed:"date" %}
                     <li class="collection-item">
+                        <input type="hidden" name="item-pk" value="{{item.pk}}" />
                         <div class="row">
                                 <div class="col s10">
-                                        <span class="title">{{item.title}}</span>
+                                        <p class="title">{{item.title}}</p>
                                 </div>
                                 <div class="col s2">
                                         <p class="right-align">{{item.date|date:'d/m/Y'}}</p>
@@ -70,16 +64,16 @@
                         </div>
                         <div class="row">
                             <div class="col s12">
-                                <p>{{item.description}}</p>
+                                <p class="description">{{item.description}}</p>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col s10">
-                                <p>{{item.keywords}}</p>
+                                <p class="keywords">{{item.keywords}}</p>
                             </div>
                             <div class="col s2">
-                                <a href="#!" class="secondary-content"><i class="material-icons">delete</i></a>
-                                <a href="#!" class="secondary-content"><i class="material-icons">mode_edit</i></a>
+                                <a href="{{ item.pk }}" class="btn-delete secondary-content"><i class="material-icons">delete</i></a>
+                                <a href="{% url 'devices:item-details' item.pk %}" class="btn-edit secondary-content"><i class="material-icons">mode_edit</i></a>
                             </div
                         </div>
                     </li>
@@ -88,11 +82,11 @@
 
             <div class="row">
                 <div class="col s6">
-                    <a id="see-more" class="btn">see more</a>
+                    <a id="see-more-items" class="btn">see more</a>
                 </div>
                 <div class="col s6">
-                    <p class="right-align">
-                        You're seeing <span id="max-items">3</span> at <span id="items-size">{{ device.history_items.count }}</span>
+                    <p class="right-align items-size-label">
+                        You're seeing <span id="current-items-size">0</span> at <span id="total-items">{{ device.history_items.count }}</span>
                     </p>
                 </div>
 
@@ -104,22 +98,42 @@
 
 </section>
 
+<!-- Modal History Item remove confirmation-->
+<div id="modal-item-remove" class="modal">
+    <div class="modal-content">
+        <p>
+            You're trying to remove a history item and this action couldn't be returned.
+            Are you sure?
+        </p>
+        <p>Item: <span class="item-title"></span></p>
+        <form>
+            <input type="hidden" name="item-pk" />
+        </form>
+        <div class="row right-align">
+            <a class="btn-small btn">Delete</a>
+            <a class="btn-small btn">Cancel</a>
+        </div>
+    </div>
+</div>
+
 <!-- Modal New History Item -->
-<div id="modalNewItem" class="modal"item-create>
-    <form id="newItem" action="{% url 'devices:item-create' %}" method="POST">
+<div id="modal-item" class="modal">
+    <form id="form-item">
+        <input type="hidden" name="pk">
         <input type="hidden" name="device" value="{{device.pk}}">
+
         <div class="modal-content">
             <h4>Create New History Item</h4>
             <div class="row">
                 <div class="row">
                     <div class="input-field col s12">
-                        <input type="text" name="title" id="title">
+                        <input type="text" name="title" id="title" placeholder="title">
                         <label for="title">Title</label>
                     </div>
                 </div>
                 <div class="row">
                     <div class="input-field col s12">
-                        <textarea class="materialize-textarea" name="description" id="description"></textarea>
+                        <textarea class="materialize-textarea" name="description" id="description" placeholder="Item description"></textarea>
                         <label for="description">description</label>
                     </div>
                 </div>
@@ -132,16 +146,19 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button class="btn waves-effect waves-light" type="button" id="btn-create-new-item">Create new Item
+            <button class="btn waves-effect waves-light" type="button" id="btn-submit-form">Save
                 <i class="material-icons right">send</i>
             </button
         </div>
     </form>
 </div>
+
+
 {% endblock %}
 
 {% block extras %}
     {% load staticfiles %}
-    <script type="text/javascript" src="{% static 'js/create-history-item.js'%}"></script>
+    <script type="text/javascript" src="{% static 'js/history-item-list.js'%}"></script>
+    <script type="text/javascript" src="{% static 'js/history-item-modal.js'%}"></script>
     <script type="text/javascript" src="{% static 'js/csrftoken.js'%}"></script>
 {% endblock %}

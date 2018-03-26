@@ -58,14 +58,30 @@ class HistoryItemAjaxCreateView(View):
     def post(self, request):
         if request.POST and request.is_ajax():
             form = HistoryItemForm(request.POST)
-            item = form.save()
+            item = form.save(commit=False)
+            item.save()
+
             json_data_response = serialize_history_item(item)
-            # {
-            #     'title': item.title,
-            #     'date': item.date.strftime("%d/%m/%Y"),
-            #     'description': item.description,
-            #     'keywords': item.keywords
-            # }
+            json_data_response['success_message'] = 'Item has been created with success'
+
+            return JsonResponse(json_data_response)
+
+
+class HistoryItemAjaxUpdateView(View):
+    def post(self, request):
+        if request.POST and request.is_ajax():
+            form = HistoryItemForm(request.POST)
+            if form.data["pk"]:
+                item = form.save(commit=False)
+                item.pk = form.data["pk"]
+                item.save(update_fields=['title', 'description', 'keywords'])
+
+                json_data_response = serialize_history_item(item)
+                json_data_response['success_message'] = 'Item has been updated with success'
+            else:
+                json_data_response = {
+                    'error_message': 'Item not found!'
+                }
 
             return JsonResponse(json_data_response)
 
@@ -85,17 +101,36 @@ class TypeAjaxCrateView(View):
                 return JsonResponse(json_data_response)
 
 
-class SeeMoreItemsAjaxView(View):
-    def post(self, request, **kwargs):
-        if request.is_ajax() and request.POST:
-            min = request.POST.get('min', None)
-            max = request.POST.get('max', None)
-            device_pk = kwargs.get('pk')
+class FindHistoryItemsAjaxView(View):
+    def get(self, request, **kwargs):
+        min = request.GET.get('min', None)
+        max = request.GET.get("max", None)
+        device_pk = kwargs.get('pk')
 
-            if min and max and device_pk:
-                items = HistoryItem.objects.filter(device=device_pk).order_by("-date")[min:max]
-                json_data_response = []
-                for item in items:
-                    json_data_response.append(serialize_history_item(item))
+        json_data_response = []
 
-                return JsonResponse(json_data_response, safe=False)
+        if min and max and device_pk:
+            items = HistoryItem.objects.filter(device=device_pk).order_by("-date")[min:max]
+            for item in items:
+                json_data_response.append(serialize_history_item(item))
+
+        return JsonResponse(json_data_response, safe=False)
+
+
+class HistoryItemDetailAjaxView(View):
+    def get(self, request, **kwargs):
+        pk = kwargs.get('pk')
+        item = HistoryItem.objects.get(pk=pk)
+        json_data_response = serialize_history_item(item)
+
+        return JsonResponse(json_data_response)
+
+
+class HistoryItemDeleteAjaxView(View):
+    def post(self, request):
+        if request.POST and request.is_ajax():
+            pk = request.POST.get("pk", None)
+            if pk:
+                HistoryItem.objects.get(pk=pk).delete()
+
+                return JsonResponse({'response': 'ok'})

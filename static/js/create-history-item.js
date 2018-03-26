@@ -1,17 +1,37 @@
 $("#btn-create-new-item").click(createNewHistoryItem);
 $("#see-more").click(seeMoreItems);
+$(".btn-edit").click(historyItemBtnEdit);
+
+function historyItemBtnEdit(event) {
+    event.preventDefault();
+    var url = $(this).attr("href");
+
+    item = editItemBy(url);
+}
+
+function editItemBy(url) {
+    $.ajax({
+        method: "GET",
+        url: url,
+        dataType: "json",
+        success: function(data){
+            showModalItemEdit(data);
+        }
+    });
+}
 
 function createNewHistoryItem() {
     var content = getContentFromFormItem();
+    var url = $("#newItem").attr("action");
 
     $.ajax({
         method: "POST",
-        url: "/devices/item/create/",
+        url: url,
         data: content,
         dataType: "json",
         success: function(data) {
             console.log(data);
-            addItemToFirstHistoryItemsList(data);
+            addOrReplaceHistoryItemList(data);
             cleanFormItem();
             updateItemsTotalLabel();
             updateItemsMaxLabel();
@@ -40,7 +60,6 @@ function seeMoreItems() {
         success: function(data) {
             $.each(data, function(i, obj) {
                 var item = data[i];
-                console.log(item);
                 addItemToHistoryItemsList(item);
 
             });
@@ -48,6 +67,22 @@ function seeMoreItems() {
         }
     });
 
+}
+
+function showModalItemEdit(item) {
+    $("#newItem input[name='pk']").val(item["pk"]);
+    $("#newItem input[name='title']").val(item["title"]);
+    $("#newItem textarea[name='description']").val(item["description"]);
+    $("#newItem input[name='keywords']").val(item["keywords"]);
+
+    $("#modalNewItem").modal({
+        complete: function() {
+            console.log("Fechou o modal");
+            cleanFormItem();
+        }
+    });
+
+    $("#modalNewItem").modal("open");
 }
 
 function countCurrentsItems() {
@@ -73,6 +108,8 @@ function updateItemsMaxLabel() {
 
 function cleanFormItem() {
     $("#newItem").trigger("reset");
+    // jquery reset doesn't work with hidden values
+    $("#newItem input[name='pk']").val("");
 }
 
 function getContentFromFormItem() {
@@ -89,9 +126,18 @@ function addItemToHistoryItemsList(item) {
     $("#history-items").append(listItem);
 }
 
-function addItemToFirstHistoryItemsList(item) {
+function addOrReplaceHistoryItemList(item) {
+    var itemPK = item["pk"];
     var listItem = createNewItemTag(item);
-    $("#history-items").prepend(listItem);
+
+    if ($("#history-items li input[name='item-pk'][value='" + itemPK + "']").length) {
+        var itemElement = $(".collection li input[name='item-pk'][value='" + itemPK + "']").parent();
+        var indexOfItemElement = itemElement.index();
+        itemElement.remove();
+        $("#history-items li").eq((indexOfItemElement-1)).after(listItem);
+    } else {
+        $("#history-items").prepend(listItem);
+    }
 }
 
 function createNewItemTag(item) {
@@ -111,6 +157,7 @@ function createNewItemTag(item) {
         )
     );
 
+    var urlEdit = "/devices/item/details/";
     var linkDefault = $("<a>").addClass("secondary-content").append(
         $("<i>").addClass("material-icons")
     );
@@ -123,12 +170,15 @@ function createNewItemTag(item) {
         $("<div>").addClass("col s2").append(
             linkDefault.clone().attr("href", "#").addClass("delete")
         ).append(
-            linkDefault.clone().attr("href", "#").addClass("edit")
+            linkDefault.clone().attr("href", urlEdit + item['pk']).addClass("edit")
         )
     );
 
     divFooter.find(".delete i").text("delete");
-    divFooter.find(".edit i").text("mode_edit");
 
-    return $("<li>").addClass("collection-item").append(divHeader).append(divContent).append(divFooter);
+    divFooter.find(".edit i").text("mode_edit");
+    divFooter.find(".edit").click(historyItemBtnEdit);
+
+    var itemPK = $("<input>").attr("type", "hidden").attr("value", item["pk"]).addClass("item-pk");
+    return $("<li>").addClass("collection-item").append(itemPK).append(divHeader).append(divContent).append(divFooter);
 }
